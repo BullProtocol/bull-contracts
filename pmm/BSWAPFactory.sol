@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 /*
 
     Copyright 2020 BSWAP FACTORY.
@@ -82,7 +84,7 @@ contract BSWAPFactory is Ownable {
 
     // ============ Breed BSWAP Function ============
 
-    function breedBSWAP(
+    function createBSWAP(
         address maintainer,
         address baseToken,
         address quoteToken,
