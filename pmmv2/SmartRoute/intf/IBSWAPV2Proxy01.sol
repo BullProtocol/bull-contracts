@@ -52,8 +52,8 @@ interface IBSWAPV2Proxy01 {
         uint256 deadLine
     ) external payable returns (address newVendingMachine, uint256 shares);
 
-    function addDVMLiquidity(
-        address dvmAddress,
+    function addBVMLiquidity(
+        address bvmAddress,
         uint256 baseInAmount,
         uint256 quoteInAmount,
         uint256 baseMinAmount,

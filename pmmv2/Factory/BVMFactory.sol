@@ -10,9 +10,9 @@ pragma experimental ABIEncoderV2;
 
 import {InitializableOwnable} from "../lib/InitializableOwnable.sol";
 import {ICloneFactory} from "../lib/CloneFactory.sol";
-import {IDVM} from "../BSWAPVendingMachine/intf/IDVM.sol";
+import {IBVM} from "../BSWAPVendingMachine/intf/IBVM.sol";
 
-interface IDVMFactory {
+interface IBVMFactory {
     function createBSWAPVendingMachine(
         address baseToken,
         address quoteToken,
@@ -28,44 +28,44 @@ interface IDVMFactory {
  * @title BSWAP VendingMachine Factory
  * @author BSWAP Breeder
  *
- * @notice Create And Register DVM Pools 
+ * @notice Create And Register BVM Pools 
  */
-contract DVMFactory is InitializableOwnable {
+contract BVMFactory is InitializableOwnable {
     // ============ Templates ============
 
     address public immutable _CLONE_FACTORY_;
     address public immutable _DEFAULT_MAINTAINER_;
     address public immutable _DEFAULT_MT_FEE_RATE_MODEL_;
-    address public _DVM_TEMPLATE_;
+    address public _BVM_TEMPLATE_;
 
     // ============ Registry ============
 
-    // base -> quote -> DVM address list
+    // base -> quote -> BVM address list
     mapping(address => mapping(address => address[])) public _REGISTRY_;
-    // creator -> DVM address list
+    // creator -> BVM address list
     mapping(address => address[]) public _USER_REGISTRY_;
 
     // ============ Events ============
 
-    event NewDVM(
+    event NewBVM(
         address baseToken,
         address quoteToken,
         address creator,
-        address dvm
+        address bvm
     );
 
-    event RemoveDVM(address dvm);
+    event RemoveBVM(address bvm);
 
     // ============ Functions ============
 
     constructor(
         address cloneFactory,
-        address dvmTemplate,
+        address bvmTemplate,
         address defaultMaintainer,
         address defaultMtFeeRateModel
     ) public {
         _CLONE_FACTORY_ = cloneFactory;
-        _DVM_TEMPLATE_ = dvmTemplate;
+        _BVM_TEMPLATE_ = bvmTemplate;
         _DEFAULT_MAINTAINER_ = defaultMaintainer;
         _DEFAULT_MT_FEE_RATE_MODEL_ = defaultMtFeeRateModel;
     }
@@ -78,9 +78,9 @@ contract DVMFactory is InitializableOwnable {
         uint256 k,
         bool isOpenTWAP
     ) external returns (address newVendingMachine) {
-        newVendingMachine = ICloneFactory(_CLONE_FACTORY_).clone(_DVM_TEMPLATE_);
+        newVendingMachine = ICloneFactory(_CLONE_FACTORY_).clone(_BVM_TEMPLATE_);
         {
-            IDVM(newVendingMachine).init(
+            IBVM(newVendingMachine).init(
                 _DEFAULT_MAINTAINER_,
                 baseToken,
                 quoteToken,
@@ -93,13 +93,13 @@ contract DVMFactory is InitializableOwnable {
         }
         _REGISTRY_[baseToken][quoteToken].push(newVendingMachine);
         _USER_REGISTRY_[tx.origin].push(newVendingMachine);
-        emit NewDVM(baseToken, quoteToken, tx.origin, newVendingMachine);
+        emit NewBVM(baseToken, quoteToken, tx.origin, newVendingMachine);
     }
 
     // ============ Admin Operation Functions ============
 
-    function updateDvmTemplate(address _newDVMTemplate) external onlyOwner {
-        _DVM_TEMPLATE_ = _newDVMTemplate;
+    function updateBvmTemplate(address _newBVMTemplate) external onlyOwner {
+        _BVM_TEMPLATE_ = _newBVMTemplate;
     }
 
     function addPoolByAdmin(
@@ -110,7 +110,7 @@ contract DVMFactory is InitializableOwnable {
     ) external onlyOwner {
         _REGISTRY_[baseToken][quoteToken].push(pool);
         _USER_REGISTRY_[creator].push(pool);
-        emit NewDVM(baseToken, quoteToken, creator, pool);
+        emit NewBVM(baseToken, quoteToken, creator, pool);
     }
 
     function removePoolByAdmin(
@@ -137,7 +137,7 @@ contract DVMFactory is InitializableOwnable {
         }
         _USER_REGISTRY_[creator] = userRegistryList;
         _USER_REGISTRY_[creator].pop();
-        emit RemoveDVM(pool);
+        emit RemoveBVM(pool);
     }
 
     // ============ View Functions ============

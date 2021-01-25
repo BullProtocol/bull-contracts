@@ -12,9 +12,9 @@ import {IERC20} from "../../intf/IERC20.sol";
 import {SafeMath} from "../../lib/SafeMath.sol";
 import {DecimalMath} from "../../lib/DecimalMath.sol";
 import {SafeERC20} from "../../lib/SafeERC20.sol";
-import {DVMStorage} from "./DVMStorage.sol";
+import {BVMStorage} from "./BVMStorage.sol";
 
-contract DVMVault is DVMStorage {
+contract BVMVault is BVMStorage {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
@@ -204,7 +204,7 @@ contract DVMVault is DVMStorage {
         bytes32 r,
         bytes32 s
     ) external {
-        require(deadline >= block.timestamp, "BSWAP_DVM_LP: EXPIRED");
+        require(deadline >= block.timestamp, "BSWAP_BVM_LP: EXPIRED");
         bytes32 digest = keccak256(
             abi.encodePacked(
                 "\x19\x01",
@@ -217,7 +217,7 @@ contract DVMVault is DVMStorage {
         address recoveredAddress = ecrecover(digest, v, r, s);
         require(
             recoveredAddress != address(0) && recoveredAddress == owner,
-            "BSWAP_DVM_LP: INVALID_SIGNATURE"
+            "BSWAP_BVM_LP: INVALID_SIGNATURE"
         );
         _approve(owner, spender, value);
     }

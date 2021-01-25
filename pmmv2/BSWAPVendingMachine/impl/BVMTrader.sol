@@ -8,14 +8,14 @@
 pragma solidity 0.6.9;
 pragma experimental ABIEncoderV2;
 
-import {DVMVault} from "./DVMVault.sol";
+import {BVMVault} from "./BVMVault.sol";
 import {SafeMath} from "../../lib/SafeMath.sol";
 import {DecimalMath} from "../../lib/DecimalMath.sol";
 import {BSWAPMath} from "../../lib/BSWAPMath.sol";
 import {IBSWAPCallee} from "../../intf/IBSWAPCallee.sol";
 import {PMMPricing} from "../../lib/PMMPricing.sol";
 
-contract DVMTrader is DVMVault {
+contract BVMTrader is BVMVault {
     using SafeMath for uint256;
 
     // ============ Events ============
@@ -96,7 +96,7 @@ contract DVMTrader is DVMVault {
         _transferQuoteOut(assetTo, quoteAmount);
 
         if (data.length > 0)
-            IBSWAPCallee(assetTo).DVMFlashLoanCall(msg.sender, baseAmount, quoteAmount, data);
+            IBSWAPCallee(assetTo).BVMFlashLoanCall(msg.sender, baseAmount, quoteAmount, data);
 
         uint256 baseBalance = _BASE_TOKEN_.balanceOf(address(this));
         uint256 quoteBalance = _QUOTE_TOKEN_.balanceOf(address(this));

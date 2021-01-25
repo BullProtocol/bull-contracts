@@ -8,7 +8,7 @@
 pragma solidity 0.6.9;
 pragma experimental ABIEncoderV2;
 
-interface IDVM {
+interface IBVM {
     function init(
         address maintainer,
         address baseTokenAddress,

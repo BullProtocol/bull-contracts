@@ -12,8 +12,8 @@ import {SafeMath} from "../../lib/SafeMath.sol";
 import {SafeERC20} from "../../lib/SafeERC20.sol";
 import {DecimalMath} from "../../lib/DecimalMath.sol";
 import {IERC20} from "../../intf/IERC20.sol";
-import {IDVM} from "../../BSWAPVendingMachine/intf/IDVM.sol";
-import {IDVMFactory} from "../../Factory/DVMFactory.sol";
+import {IBVM} from "../../BSWAPVendingMachine/intf/IBVM.sol";
+import {IBVMFactory} from "../../Factory/BVMFactory.sol";
 import {CPStorage} from "./CPStorage.sol";
 import {PMMPricing} from "../../lib/PMMPricing.sol";
 import {IBSWAPCallee} from "../../intf/IBSWAPCallee.sol";
@@ -86,7 +86,7 @@ contract CPFunding is CPStorage {
             _poolQuoteToken = address(_QUOTE_TOKEN_);
         }
 
-        _POOL_ = IDVMFactory(_POOL_FACTORY_).createBSWAPVendingMachine(
+        _POOL_ = IBVMFactory(_POOL_FACTORY_).createBSWAPVendingMachine(
             _poolBaseToken,
             _poolQuoteToken,
             3e15, // 0.3% lp feeRate
@@ -101,7 +101,7 @@ contract CPFunding is CPStorage {
         _transferBaseOut(_POOL_, poolBase);
         _transferQuoteOut(_POOL_, poolQuote);
 
-        _TOTAL_LP_AMOUNT_ = IDVM(_POOL_).buyShares(address(this));
+        _TOTAL_LP_AMOUNT_ = IBVM(_POOL_).buyShares(address(this));
 
         msg.sender.transfer(_SETTEL_FUND_);
 
@@ -136,7 +136,7 @@ contract CPFunding is CPStorage {
 
         // Try to make midPrice equal to avgPrice
         // k=1, If quote and base are not balanced, one side must be cut off
-        // DVM truncated quote, but if more quote than base entering the pool, we need set the quote to the base
+        // BVM truncated quote, but if more quote than base entering the pool, we need set the quote to the base
 
         // m = avgPrice
         // i = m (1-quote/(m*base))
@@ -146,7 +146,7 @@ contract CPFunding is CPStorage {
         uint256 baseDepth = DecimalMath.mulFloor(avgPrice, poolBase);
 
         if (poolQuote == 0) {
-            // ask side only DVM
+            // ask side only BVM
             poolI = _I_;
         } else if (unUsedBase== poolBase) {
             // standard bonding curve

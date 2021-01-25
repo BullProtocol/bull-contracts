@@ -9,7 +9,7 @@ pragma solidity 0.6.9;
 pragma experimental ABIEncoderV2;
 
 interface IBSWAPCallee {
-    function DVMSellShareCall(
+    function BVMSellShareCall(
         address sender,
         uint256 burnShareAmount,
         uint256 baseAmount,
@@ -17,7 +17,7 @@ interface IBSWAPCallee {
         bytes calldata data
     ) external;
 
-    function DVMFlashLoanCall(
+    function BVMFlashLoanCall(
         address sender,
         uint256 baseAmount,
         uint256 quoteAmount,

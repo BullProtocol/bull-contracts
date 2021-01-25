@@ -16,7 +16,7 @@ import {IFeeRateModel} from "../../lib/FeeRateModel.sol";
 import {IERC20} from "../../intf/IERC20.sol";
 import {PMMPricing} from "../../lib/PMMPricing.sol";
 
-contract DVMStorage is ReentrancyGuard {
+contract BVMStorage is ReentrancyGuard {
     using SafeMath for uint256;
 
     bool public _IS_OPEN_TWAP_ = false;

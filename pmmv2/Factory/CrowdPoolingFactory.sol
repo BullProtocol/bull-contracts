@@ -26,7 +26,7 @@ contract CrowdPoolingFactory is InitializableOwnable {
     // ============ Templates ============
 
     address public immutable _CLONE_FACTORY_;
-    address public immutable _DVM_FACTORY_;
+    address public immutable _BVM_FACTORY_;
     address public immutable _DEFAULT_MAINTAINER_;
     address public immutable _DEFAULT_MT_FEE_RATE_MODEL_;
     address public immutable _DEFAULT_PERMISSION_MANAGER_;
@@ -80,14 +80,14 @@ contract CrowdPoolingFactory is InitializableOwnable {
     constructor(
         address cloneFactory,
         address cpTemplate,
-        address dvmFactory,
+        address bvmFactory,
         address defaultMaintainer,
         address defaultMtFeeRateModel,
         address defaultPermissionManager
     ) public {
         _CLONE_FACTORY_ = cloneFactory;
         _CP_TEMPLATE_ = cpTemplate;
-        _DVM_FACTORY_ = dvmFactory;
+        _BVM_FACTORY_ = bvmFactory;
         _DEFAULT_MAINTAINER_ = defaultMaintainer;
         _DEFAULT_MT_FEE_RATE_MODEL_ = defaultMtFeeRateModel;
         _DEFAULT_PERMISSION_MANAGER_ = defaultPermissionManager;
@@ -116,7 +116,7 @@ contract CrowdPoolingFactory is InitializableOwnable {
         addressList[3] = quoteToken;
         addressList[4] = _DEFAULT_PERMISSION_MANAGER_;
         addressList[5] = _DEFAULT_MT_FEE_RATE_MODEL_;
-        addressList[6] = _DVM_FACTORY_;
+        addressList[6] = _BVM_FACTORY_;
 
         ICP(cpAddress).init(
             addressList,

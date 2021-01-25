@@ -10,9 +10,9 @@ pragma experimental ABIEncoderV2;
 
 import {IFeeRateModel} from "../../lib/FeeRateModel.sol";
 import {IERC20} from "../../intf/IERC20.sol";
-import {DVMTrader} from "./DVMTrader.sol";
-import {DVMFunding} from "./DVMFunding.sol";
-import {DVMVault} from "./DVMVault.sol";
+import {BVMTrader} from "./BVMTrader.sol";
+import {BVMFunding} from "./BVMFunding.sol";
+import {BVMVault} from "./BVMVault.sol";
 
 /**
  * @title BSWAP VendingMachine
@@ -20,7 +20,7 @@ import {DVMVault} from "./DVMVault.sol";
  *
  * @notice BSWAPVendingMachine initialization
  */
-contract DVM is DVMTrader, DVMFunding {
+contract BVM is BVMTrader, BVMFunding {
     function init(
         address maintainer,
         address baseTokenAddress,
@@ -88,6 +88,6 @@ contract DVM is DVMTrader, DVMFunding {
     // ============ Version Control ============
     
     function version() external pure returns (string memory) {
-        return "DVM 1.0.0";
+        return "BVM 1.0.0";
     }
 }

@@ -41,7 +41,7 @@ contract BSWAPV2Proxy01 is IBSWAPV2Proxy01, ReentrancyGuard, InitializableOwnabl
     address public immutable _WETH_;
     address public immutable _BSWAP_APPROVE_;
     address public immutable _BSWAP_SELL_HELPER_;
-    address public immutable _DVM_FACTORY_;
+    address public immutable _BVM_FACTORY_;
     address public immutable _BPP_FACTORY_;
     address public immutable _CP_FACTORY_;
     address public immutable _BSWAP_INCENTIVE_;
@@ -72,7 +72,7 @@ contract BSWAPV2Proxy01 is IBSWAPV2Proxy01, ReentrancyGuard, InitializableOwnabl
     receive() external payable {}
 
     constructor(
-        address dvmFactory,
+        address bvmFactory,
         address bppFactory,
         address cpFactory,
         address payable weth,
@@ -81,7 +81,7 @@ contract BSWAPV2Proxy01 is IBSWAPV2Proxy01, ReentrancyGuard, InitializableOwnabl
         address chiToken,
         address bswapIncentive
     ) public {
-        _DVM_FACTORY_ = dvmFactory;
+        _BVM_FACTORY_ = bvmFactory;
         _BPP_FACTORY_ = bppFactory;
         _CP_FACTORY_ = cpFactory;
         _WETH_ = weth;
@@ -104,7 +104,7 @@ contract BSWAPV2Proxy01 is IBSWAPV2Proxy01, ReentrancyGuard, InitializableOwnabl
         _GAS_EXTERNAL_RETURN_ = newExternalGasReturn;
     }
 
-    // ============ DVM Functions (create & add liquidity) ============
+    // ============ BVM Functions (create & add liquidity) ============
 
     function createBSWAPVendingMachine(
         address baseToken,
@@ -127,7 +127,7 @@ contract BSWAPV2Proxy01 is IBSWAPV2Proxy01, ReentrancyGuard, InitializableOwnabl
         {
             address _baseToken = baseToken == _ETH_ADDRESS_ ? _WETH_ : baseToken;
             address _quoteToken = quoteToken == _ETH_ADDRESS_ ? _WETH_ : quoteToken;
-            newVendingMachine = IBSWAPV2(_DVM_FACTORY_).createBSWAPVendingMachine(
+            newVendingMachine = IBSWAPV2(_BVM_FACTORY_).createBSWAPVendingMachine(
                 _baseToken,
                 _quoteToken,
                 lpFeeRate,
@@ -159,8 +159,8 @@ contract BSWAPV2Proxy01 is IBSWAPV2Proxy01, ReentrancyGuard, InitializableOwnabl
         (shares, , ) = IBSWAPV2(newVendingMachine).buyShares(msg.sender);
     }
 
-    function addDVMLiquidity(
-        address dvmAddress,
+    function addBVMLiquidity(
+        address bvmAddress,
         uint256 baseInAmount,
         uint256 quoteInAmount,
         uint256 baseMinAmount,
@@ -179,9 +179,9 @@ contract BSWAPV2Proxy01 is IBSWAPV2Proxy01, ReentrancyGuard, InitializableOwnabl
             uint256 quoteAdjustedInAmount
         )
     {
-        address _dvm = dvmAddress;
-        (baseAdjustedInAmount, quoteAdjustedInAmount) = _addDVMLiquidity(
-            _dvm,
+        address _bvm = bvmAddress;
+        (baseAdjustedInAmount, quoteAdjustedInAmount) = _addBVMLiquidity(
+            _bvm,
             baseInAmount,
             quoteInAmount
         );
@@ -190,21 +190,21 @@ contract BSWAPV2Proxy01 is IBSWAPV2Proxy01, ReentrancyGuard, InitializableOwnabl
             "BSWAPV2Proxy01: deposit amount is not enough"
         );
 
-        _deposit(msg.sender, _dvm, IBSWAPV2(_dvm)._BASE_TOKEN_(), baseAdjustedInAmount, flag == 1);
-        _deposit(msg.sender, _dvm, IBSWAPV2(_dvm)._QUOTE_TOKEN_(), quoteAdjustedInAmount, flag == 2);
+        _deposit(msg.sender, _bvm, IBSWAPV2(_bvm)._BASE_TOKEN_(), baseAdjustedInAmount, flag == 1);
+        _deposit(msg.sender, _bvm, IBSWAPV2(_bvm)._QUOTE_TOKEN_(), quoteAdjustedInAmount, flag == 2);
         
-        (shares, , ) = IBSWAPV2(_dvm).buyShares(msg.sender);
+        (shares, , ) = IBSWAPV2(_bvm).buyShares(msg.sender);
         // refund dust eth
         if (flag == 1 && msg.value > baseAdjustedInAmount) msg.sender.transfer(msg.value - baseAdjustedInAmount);
         if (flag == 2 && msg.value > quoteAdjustedInAmount) msg.sender.transfer(msg.value - quoteAdjustedInAmount);
     }
 
-    function _addDVMLiquidity(
-        address dvmAddress,
+    function _addBVMLiquidity(
+        address bvmAddress,
         uint256 baseInAmount,
         uint256 quoteInAmount
     ) internal view returns (uint256 baseAdjustedInAmount, uint256 quoteAdjustedInAmount) {
-        (uint256 baseReserve, uint256 quoteReserve) = IBSWAPV2(dvmAddress).getVaultReserve();
+        (uint256 baseReserve, uint256 quoteReserve) = IBSWAPV2(bvmAddress).getVaultReserve();
         if (quoteReserve == 0 && baseReserve == 0) {
             baseAdjustedInAmount = baseInAmount;
             quoteAdjustedInAmount = quoteInAmount;

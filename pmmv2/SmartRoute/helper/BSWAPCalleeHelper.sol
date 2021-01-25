@@ -30,7 +30,7 @@ contract BSWAPCalleeHelper is ReentrancyGuard {
         _WETH_ = weth;
     }
 
-    function DVMSellShareCall(
+    function BVMSellShareCall(
         address payable assetTo,
         uint256,
         uint256 baseAmount,

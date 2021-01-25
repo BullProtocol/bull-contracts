@@ -8,11 +8,11 @@
 pragma solidity 0.6.9;
 pragma experimental ABIEncoderV2;
 
-import {DVMVault} from "./DVMVault.sol";
+import {BVMVault} from "./BVMVault.sol";
 import {DecimalMath} from "../../lib/DecimalMath.sol";
 import {IBSWAPCallee} from "../../intf/IBSWAPCallee.sol";
 
-contract DVMFunding is DVMVault {
+contract BVMFunding is BVMVault {
     // ============ Events ============
 
     event BuyShares(address to, uint256 increaseShares, uint256 totalShares);
@@ -90,7 +90,7 @@ contract DVMFunding is DVMVault {
         _sync();
 
         if (data.length > 0) {
-            IBSWAPCallee(to).DVMSellShareCall(
+            IBSWAPCallee(to).BVMSellShareCall(
                 msg.sender,
                 shareAmount,
                 baseAmount,
